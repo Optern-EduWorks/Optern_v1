@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\khanna\\btech\\internship\\optern\\Optern_v1-2\\JobPortalAPI\\db_apis.csproj": {}
+    "D:\\khanna\\btech\\internship\\optern\\Optern_v1\\JobPortalAPI\\db_apis.csproj": {}
   },
   "projects": {
-    "D:\\khanna\\btech\\internship\\optern\\Optern_v1-2\\JobPortalAPI\\db_apis.csproj": {
+    "D:\\khanna\\btech\\internship\\optern\\Optern_v1\\JobPortalAPI\\db_apis.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\khanna\\btech\\internship\\optern\\Optern_v1-2\\JobPortalAPI\\db_apis.csproj",
+        "projectUniqueName": "D:\\khanna\\btech\\internship\\optern\\Optern_v1\\JobPortalAPI\\db_apis.csproj",
         "projectName": "db_apis",
-        "projectPath": "D:\\khanna\\btech\\internship\\optern\\Optern_v1-2\\JobPortalAPI\\db_apis.csproj",
+        "projectPath": "D:\\khanna\\btech\\internship\\optern\\Optern_v1\\JobPortalAPI\\db_apis.csproj",
         "packagesPath": "C:\\Users\\Sreedhar\\.nuget\\packages\\",
-        "outputPath": "D:\\khanna\\btech\\internship\\optern\\Optern_v1-2\\JobPortalAPI\\obj\\",
+        "outputPath": "D:\\khanna\\btech\\internship\\optern\\Optern_v1\\JobPortalAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Sreedhar\\AppData\\Roaming\\NuGet\\NuGet.Config"

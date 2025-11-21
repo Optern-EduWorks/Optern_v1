@@ -97,6 +97,11 @@ public class UsersController : ControllerBase
         {
             await HandleRecruiterRegistrationAsync(user, registration.CompanyName, registration.CompanyWebsite);
         }
+        // Handle candidate registration with profile creation
+        else if (user.Role != null && (user.Role.Contains("Candidate", StringComparison.OrdinalIgnoreCase) || user.Role.Contains("student", StringComparison.OrdinalIgnoreCase)))
+        {
+            await HandleCandidateRegistrationAsync(user, registration);
+        }
 
         // Remove password from response for security
         user.Password = string.Empty;
@@ -305,5 +310,45 @@ public class UsersController : ControllerBase
         await _context.SaveChangesAsync();
 
         Console.WriteLine($"Created recruiter profile for user {user.Email} with company '{company.Name}'");
+    }
+
+    private async Task HandleCandidateRegistrationAsync(User user, UserRegistrationDto registration)
+    {
+        Console.WriteLine($"Handling candidate registration for user: {user.Email}");
+
+        // Check if candidate profile already exists
+        var existingProfile = await _context.CandidateProfiles.FirstOrDefaultAsync(cp => cp.Email == user.Email);
+        if (existingProfile != null)
+        {
+            Console.WriteLine($"Candidate profile already exists for user: {user.Email}");
+            return;
+        }
+
+        // Create candidate profile with basic information from registration
+        var candidateProfile = new CandidateProfile
+        {
+            CandidateID = user.UserId,
+            FullName = user.Username ?? "",
+            Email = user.Email,
+            PhoneNumber = user.PhoneNumber ?? "",
+            LinkedInProfile = "",
+            Address = "",
+            DateOfBirth = DateTime.MinValue, // Default date for no date of birth specified
+            Gender = "",
+            Status = "Active",
+            ResumeURL = "",
+            CreatedDate = DateTime.Now,
+            UpdatedDate = DateTime.Now,
+            GraduationYear = DateTime.Now.Year,
+            College = "",
+            Course = "",
+            CurrentSemester = "",
+            UserId = user.UserId
+        };
+
+        _context.CandidateProfiles.Add(candidateProfile);
+        await _context.SaveChangesAsync();
+
+        Console.WriteLine($"Created candidate profile for user {user.Email} with ID: {candidateProfile.CandidateID}");
     }
 }
