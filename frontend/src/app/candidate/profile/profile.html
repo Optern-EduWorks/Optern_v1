@@ -43,9 +43,9 @@
     <!-- Profile Header Card -->
     <div class="profile-header-card">
       <div class="profile-avatar-section">
-        <div class="profile-avatar-large">{{ profile.fullName ? (profile.fullName | slice:0:2 | uppercase) : 'NN' }}</div>
+        <div class="profile-avatar-large">{{ (authService.getCurrentUser()?.username || profile.fullName) ? ((authService.getCurrentUser()?.username || profile.fullName) | slice:0:2 | uppercase) : 'NN' }}</div>
         <div class="profile-header-info">
-          <h2 class="profile-name">{{ profile.fullName || 'New User' }}</h2>
+          <h2 class="profile-name">{{ authService.getCurrentUser()?.username || profile.fullName || 'New User' }}</h2>
           <p class="profile-title">{{ profile.course || 'Student' }} • {{ profile.college || 'College' }}</p>
           <div class="profile-meta">
             <span class="meta-item">

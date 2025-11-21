@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProfileService } from '../../services/profile.service';
@@ -78,7 +78,11 @@ export class Profile implements OnInit {
   showSessionsModal = false;
   activeSessions: any[] = [];
 
-  constructor(private profileService: ProfileService, private authService: AuthService) {}
+  constructor(
+    public profileService: ProfileService,
+    public authService: AuthService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     console.log('Profile component initialized');
@@ -294,15 +298,39 @@ export class Profile implements OnInit {
     this.profileService.updateProfile(profileToSave).subscribe({
       next: (data: CandidateProfile) => {
         console.log('Profile saved successfully:', data);
-        // Update both profile objects with the saved data
-        this.profile = { ...data };
-        this.editProfile = { ...data };
+
+        // Update profile with the edited data (which contains the user's changes)
+        // The server returns the same data we sent, so we use the editProfile data
+        const updatedProfile = {
+          ...data,
+          fullName: this.editProfile.fullName,
+          email: this.editProfile.email,
+          phoneNumber: this.editProfile.phoneNumber,
+          address: this.editProfile.address,
+          linkedInProfile: this.editProfile.linkedInProfile,
+          dateOfBirth: this.editProfile.dateOfBirth,
+          gender: this.editProfile.gender,
+          college: this.editProfile.college,
+          course: this.editProfile.course,
+          graduationYear: this.editProfile.graduationYear,
+          currentSemester: this.editProfile.currentSemester,
+          emailNotifications: this.editProfile.emailNotifications,
+          jobApplicationUpdates: this.editProfile.jobApplicationUpdates,
+          interviewReminders: this.editProfile.interviewReminders,
+          marketingCommunications: this.editProfile.marketingCommunications
+        };
+
+        this.profile = { ...updatedProfile };
+        this.editProfile = { ...updatedProfile };
+
         this.successMessage = 'Profile updated successfully!';
         this.isSaving = false;
         this.isEditMode = false; // Exit edit mode after successful save
 
+        // Force change detection to ensure UI updates immediately
+        this.cdr.detectChanges();
+
         // Update auth service user data with the current fullName and phoneNumber
-        const currentUser = this.authService.getCurrentUser();
         if (currentUser) {
           const updatedUser = {
             ...currentUser,
@@ -359,11 +387,37 @@ export class Profile implements OnInit {
     this.profileService.updateProfile(profileToSave).subscribe({
       next: (data: CandidateProfile) => {
         console.log('Academic info saved successfully:', data);
-        this.profile = { ...data };
-        this.editProfile = { ...data };
+
+        // Update profile with the edited data (which contains the user's changes)
+        const updatedProfile = {
+          ...data,
+          fullName: this.editProfile.fullName,
+          email: this.editProfile.email,
+          phoneNumber: this.editProfile.phoneNumber,
+          address: this.editProfile.address,
+          linkedInProfile: this.editProfile.linkedInProfile,
+          dateOfBirth: this.editProfile.dateOfBirth,
+          gender: this.editProfile.gender,
+          college: this.editProfile.college,
+          course: this.editProfile.course,
+          graduationYear: this.editProfile.graduationYear,
+          currentSemester: this.editProfile.currentSemester,
+          emailNotifications: this.editProfile.emailNotifications,
+          jobApplicationUpdates: this.editProfile.jobApplicationUpdates,
+          interviewReminders: this.editProfile.interviewReminders,
+          marketingCommunications: this.editProfile.marketingCommunications
+        };
+
+        this.profile = { ...updatedProfile };
+        this.editProfile = { ...updatedProfile };
+
         this.successMessage = 'Academic information updated successfully!';
         this.isSaving = false;
         this.isAcademicEditMode = false; // Exit academic edit mode after successful save
+
+        // Force change detection to ensure UI updates immediately
+        this.cdr.detectChanges();
+
         // Update auth service user data with the current fullName and phoneNumber
         const currentUser = this.authService.getCurrentUser();
         if (currentUser) {
