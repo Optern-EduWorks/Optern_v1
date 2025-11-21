@@ -18,6 +18,7 @@
       <option>Hold</option>
       <option>Shortlisted</option>
       <option>Interview Scheduled</option>
+      <option>Approved</option>
       <option>Rejected</option>
     </select>
     <div class="view-buttons">
@@ -54,6 +55,9 @@
           </button>
           <button class="shortlist-btn" *ngIf="app.status==='Applied'" (click)="shortlist(app)">
             <i class="bi bi-check-circle"></i> Shortlist
+          </button>
+          <button class="approve-btn" *ngIf="app.status !== 'Applied' && app.status !== 'Rejected'" (click)="approve(app)">
+            <i class="bi bi-check2-all"></i> Approve
           </button>
           <button class="interview-btn" *ngIf="app.status==='Shortlisted'" (click)="scheduleInterview(app)">Schedule Interview</button>
           <button class="unreject-btn" *ngIf="app.status==='Rejected'" (click)="updateStatus(app, 'Applied')">
@@ -112,6 +116,12 @@
           class="shortlist-btn"
           (click)="shortlist(app)">
           Shortlist
+        </button>
+        <button
+          *ngIf="app.status !== 'Applied' && app.status !== 'Rejected'"
+          class="approve-btn"
+          (click)="approve(app)">
+          <i class="bi bi-check2-all"></i> Approve
         </button>
         <button
           *ngIf="app.status === 'Shortlisted'"
@@ -253,6 +263,9 @@
           <div class="decision-actions">
             <button class="shortlist-btn" (click)="shortlist(selectedApplication)">
               <i class="bi bi-check-circle"></i> Shortlist Candidate
+            </button>
+            <button class="approve-btn" *ngIf="selectedApplication?.status !== 'Applied' && selectedApplication?.status !== 'Rejected'" (click)="approve(selectedApplication)">
+              <i class="bi bi-check2-all"></i> Approve Candidate
             </button>
             <button class="reject-btn" (click)="updateStatus(selectedApplication, 'Rejected')">
               <i class="bi bi-x-circle"></i> Reject Application

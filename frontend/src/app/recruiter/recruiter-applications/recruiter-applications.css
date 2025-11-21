@@ -385,6 +385,24 @@
   transform: translateY(-1px);
 }
 
+.approve-btn {
+  background: #8b5cf6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.approve-btn:hover {
+  background: #7c3aed;
+  transform: translateY(-1px);
+}
+
 /* List View */
 .application-list {
   margin-top: 24px;
@@ -479,7 +497,7 @@
   z-index: 10;
 }
 
-.shortlist-btn, .interview-btn, .reject-btn, .unreject-btn {
+.shortlist-btn, .interview-btn, .reject-btn, .unreject-btn, .approve-btn {
   position: relative;
   z-index: 11;
   cursor: pointer;

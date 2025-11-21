@@ -188,6 +188,48 @@ export class ApplicationsManagementComponent implements OnInit, OnDestroy {
     }
   }
 
+  approve(app: Application | undefined): void {
+    if (app) {
+      console.log('Approving application:', app);
+      // Update status in backend if application has id
+      if ((app as any).applicationID) {
+        const id = (app as any).applicationID;
+        console.log('Sending approve request for application ID:', id, 'with payload:', { Status: 'Approved' });
+
+        // Try with PascalCase Status first
+        this.applicationService.update(id, { Status: 'Approved' }).subscribe({
+          next: (response) => {
+            console.log('Approve response:', response);
+            (app as any).status = 'Approved';
+            this.alertService.success('Success', 'Candidate approved successfully!');
+          },
+          error: (err) => {
+            console.error('Approve error with PascalCase:', err);
+            // Try with camelCase status as fallback
+            console.log('Trying with camelCase status...');
+            this.applicationService.update(id, { status: 'Approved' }).subscribe({
+              next: (response) => {
+                console.log('Approve response (camelCase):', response);
+                (app as any).status = 'Approved';
+                this.alertService.success('Success', 'Candidate approved successfully!');
+              },
+              error: (err2) => {
+                console.error('Approve error with camelCase:', err2);
+                const errorMessage = err2?.error?.message || err2?.message || 'Unknown error occurred';
+                this.alertService.error('Error', 'Failed to approve: ' + errorMessage);
+              }
+            });
+          }
+        });
+      } else {
+        console.log('No applicationID found, updating locally only');
+        (app as any).status = 'Approved';
+      }
+    } else {
+      console.log('No application provided to approve method');
+    }
+  }
+
   updateStatus(app: Application | undefined, newStatus: string): void {
     if (app) {
       if ((app as any).applicationID) {
