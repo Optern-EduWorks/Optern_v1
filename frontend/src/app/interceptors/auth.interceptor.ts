@@ -22,8 +22,18 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         return next(authReq).pipe(
           catchError((error) => {
             if (error.status === 401) {
-              // Trigger session timeout for 401 responses
-              sessionTimeoutService.triggerSessionTimeout();
+              // Only trigger session timeout for authenticated requests that require auth
+              // Don't trigger timeout for endpoints that might legitimately return 401
+              // (like applications/by-candidate which has [AllowAnonymous] but tries auth,
+              // or jobs endpoints that may be called for different user roles)
+              const isPublicEndpoint = req.url.includes('/applications/by-candidate') ||
+                                      req.url.includes('/api/Jobs');
+              if (!isPublicEndpoint && !sessionTimeoutService.isSessionExpired()) {
+                console.log('401 response received for authenticated endpoint, triggering session timeout');
+                sessionTimeoutService.triggerSessionTimeout();
+              } else {
+                console.log('401 response received for public endpoint, not triggering session timeout');
+              }
             }
             return throwError(() => error);
           })
@@ -35,13 +45,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     }
   }
 
-  // For requests without auth, still check for 401 responses
+  // For requests without auth, don't trigger session timeout on 401
+  // These are likely public endpoints that don't require authentication
   return next(req).pipe(
     catchError((error) => {
-      if (error.status === 401) {
-        // Trigger session timeout for 401 responses
-        sessionTimeoutService.triggerSessionTimeout();
-      }
+      // Don't trigger session timeout for unauthenticated requests
+      // The endpoint should handle its own error responses
       return throwError(() => error);
     })
   );

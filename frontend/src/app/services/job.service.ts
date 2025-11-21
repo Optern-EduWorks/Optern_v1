@@ -50,7 +50,8 @@ export class JobService {
     console.log('Starting periodic refresh');
     // Initial load
     this.refreshAllJobs();
-    this.refreshRecruiterJobs();
+    // Only refresh recruiter jobs if user is a recruiter
+    this.checkAndRefreshRecruiterJobs();
 
     // Set up periodic refresh - refresh both but less frequently for recruiter jobs
     setInterval(() => {
@@ -58,11 +59,30 @@ export class JobService {
       this.refreshAllJobs();
     }, this.refreshInterval);
 
-    // Separate interval for recruiter jobs (every 60 seconds)
+    // Separate interval for recruiter jobs (every 60 seconds) - only for recruiters
     setInterval(() => {
       console.log('Running recruiter jobs periodic refresh');
-      this.refreshRecruiterJobs();
+      this.checkAndRefreshRecruiterJobs();
     }, 60000);
+  }
+
+  private checkAndRefreshRecruiterJobs() {
+    // Only refresh recruiter jobs if user is logged in and is a recruiter
+    const userData = localStorage.getItem('optern_user');
+    if (userData) {
+      try {
+        const user = JSON.parse(userData);
+        if (user && (user.role === 'recruiter' || user.role === 'admin')) {
+          this.refreshRecruiterJobs();
+        } else {
+          console.log('Skipping recruiter jobs refresh - user is not a recruiter');
+        }
+      } catch (e) {
+        console.log('Error parsing user data, skipping recruiter jobs refresh');
+      }
+    } else {
+      console.log('No user data found, skipping recruiter jobs refresh');
+    }
   }
 
   private refreshAllJobs() {
